@@ -1,4 +1,4 @@
-# Hello World Sample App
+# Hello World Sample App using connection 
 
 Nothing much
 
@@ -28,4 +28,4 @@ PORT=8083 INSTANCE_ID=some-text go run main.go
 
 ## Author
 
-Noval Agung Prayogo
+hitlur
