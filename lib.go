@@ -1,21 +1,24 @@
-package main 
+package main
 
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"log"
+	"net/http"
 	"os"
-	
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func con() (*sql.conn, error) {
-	connString := os.gotenv("MYSQL_CONN_STRING")
+func conn() (*sql.Conn, error) {
+	connString := os.Getenv("MYSQL_CONN_STRING")
 	db, err := sql.Open("mysql", connString)
-	if err!= nil {
+	if err != nil {
 		return nil, err
 	}
 
-	conn, err := db.conn(context.Baground())
+	conn, err := db.Conn(context.Background())
 	if err != nil {
 		return nil, err
 	}
@@ -23,34 +26,34 @@ func con() (*sql.conn, error) {
 	return conn, nil
 }
 
-func wrideData(w http.ResponseWriter, data interface{}) {
-	w.header().Set("Content-type", "application/json")
-	
-	result := map[string]interface{}{
-		"Status": http.StatusOK,
-		"Data":	data,
-		"Message": "",
-	} 
+func writeData(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-type", "application/json")
 
-	err := json.NewEncoder(w).Encoder(result)
-	if err!= nil {
-		log.Println("ERROR", err.error())
-		http.error(w, err.error(), http.StatusInternalServerError)
+	result := map[string]interface{}{
+		"Status":  http.StatusOK,
+		"Data":    data,
+		"Message": "",
+	}
+
+	err := json.NewEncoder(w).Encode(result)
+	if err != nil {
+		log.Println("ERROR", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-func wrideError(w http.ResponseWriter, err error{}) {
-	log.Println("ERROR", err.error())
-	
-	result := map[string]interface{}{
-		"Status": http.StatusInternalServerError,
-		"Data":	nill,
-		"Message": err.Error(),
-	} 
+func writeError(w http.ResponseWriter, err error) {
+	log.Println("ERROR", err.Error())
 
-	err := json.NewEncoder(w).Encoder(result)
-	if err!= nil {
-		log.Println("ERROR", err.error())
-		http.error(w, err.error(), http.StatusInternalServerError)
+	result := map[string]interface{}{
+		"Status":  http.StatusInternalServerError,
+		"Data":    nil,
+		"Message": err.Error(),
+	}
+
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		log.Println("ERROR", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
